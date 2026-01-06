@@ -189,7 +189,7 @@ def simple_answer_question(vectorstore, query):
                     
             except Exception as simple_error:
                 print(f"DEBUG: Simple LLM also failed: {str(simple_error)}")
-                return f"AI unavailable. Here's relevant information about '{query}':\n\n{context[:500]}"
+                return f"AI unavailable. Here's relevant information about '{query}':\n\n{context[:800]}"
             
     except Exception as outer_error:
         print(f"DEBUG: Outer error: {str(outer_error)}")
@@ -251,9 +251,29 @@ def main():
     elif input_type == "TXT":
         input_data = st.file_uploader("Upload TXT files", type=["txt"])
     
+    # if st.button("Proceed"):
+    #     vectorstore = process_input(input_type, input_data)
+    #     st.session_state["vectorstore"] = vectorstore
+
     if st.button("Proceed"):
-        vectorstore = process_input(input_type, input_data)
-        st.session_state["vectorstore"] = vectorstore
+        if input_type == "Link":
+            if not input_data or all(not url.strip() for url in input_data):
+                st.error("Please enter at least one valid link.")
+            else:
+                vectorstore = process_input(input_type, input_data)
+                st.session_state["vectorstore"] = vectorstore
+        elif input_type in ["PDF", "DOCX", "TXT"]:
+            if input_data is None:
+                st.error(f"Please upload a {input_type} file.")
+            else:
+                vectorstore = process_input(input_type, input_data)
+                st.session_state["vectorstore"] = vectorstore
+        elif input_type == "Text":
+            if not input_data or not input_data.strip():
+                st.error("Please enter some text.")
+            else:
+                vectorstore = process_input(input_type, input_data)
+                st.session_state["vectorstore"] = vectorstore
     
     if "vectorstore" in st.session_state:
         query = st.text_input("Ask a question")
