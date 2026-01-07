@@ -1,4 +1,4 @@
-# RAG QnA Application
+# AI-Powered RAG-Based Question Answering System
 
 A simple Retrieval-Augmented Generation (RAG) Question Answering system built in Python with a Streamlit web app interface.  
 It retrieves relevant context from a document database using FAISS and generates accurate answers using a language model (Hugging Face).
